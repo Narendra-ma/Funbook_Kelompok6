@@ -1,8 +1,8 @@
 <?php
 include 'header.php';
 
-// Ambil postingan dari database
-$sql = "SELECT posts.*, users.username, users.full_name, users.profile_picture 
+// Ambil postingan dari database - TAMBAH user_id
+$sql = "SELECT posts.*, users.username, users.full_name, users.profile_picture, users.id as user_id 
         FROM posts 
         JOIN users ON posts.user_id = users.id 
         WHERE users.is_banned = 0
@@ -48,6 +48,11 @@ $posts = $stmt->fetchAll();
                 <a href="meme.php" class="d-block py-2 text-dark text-decoration-none">
                     <i class="fas fa-gamepad me-2"></i>Meme
                 </a>
+                <?php if(isset($_SESSION['is_admin']) && $_SESSION['is_admin']): ?>
+                <a href="admin.php" class="d-block py-2 text-dark text-decoration-none">
+                    <i class="fas fa-cog me-2"></i>Admin Panel
+                </a>
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -79,7 +84,10 @@ $posts = $stmt->fetchAll();
                             <img src="assets/images/profiles/<?php echo $post['profile_picture']; ?>" 
                                  class="rounded-circle me-3" width="45" height="45">
                             <div>
-                                <h6 class="fw-bold mb-0"><?php echo $post['full_name']; ?></h6>
+                                <!-- PERUBAHAN: Nama jadi link ke profile -->
+                                <a href="profile.php?id=<?php echo $post['user_id']; ?>" class="text-decoration-none text-dark">
+                                    <h6 class="fw-bold mb-0"><?php echo $post['full_name']; ?></h6>
+                                </a>
                                 <small class="text-muted">
                                     <?php echo date('d M Y H:i', strtotime($post['created_at'])); ?>
                                 </small>
@@ -100,7 +108,7 @@ $posts = $stmt->fetchAll();
                         <button class="btn btn-sm btn-outline-primary like-btn" data-post-id="<?php echo $post['id']; ?>">
                             <i class="far fa-thumbs-up"></i> Suka
                         </button>
-                        <button class="btn btn-sm btn-outline-secondary">
+                        <button class="btn btn-sm btn-outline-secondary" onclick="window.location.href='comment.php?post_id=<?php echo $post['id']; ?>'">
                             <i class="far fa-comment"></i> Komentar
                         </button>
                         <button class="btn btn-sm btn-outline-secondary">
@@ -145,7 +153,10 @@ $posts = $stmt->fetchAll();
                 <div class="d-flex align-items-center mb-2">
                     <img src="assets/images/profiles/<?php echo $friend['profile_picture']; ?>" 
                          class="rounded-circle me-2" width="35" height="35">
-                    <span class="small"><?php echo $friend['full_name']; ?></span>
+                    <!-- PERUBAHAN: Nama teman jadi link ke profile -->
+                    <a href="profile.php?id=<?php echo $friend['id']; ?>" class="text-decoration-none text-dark small">
+                        <?php echo $friend['full_name']; ?>
+                    </a>
                 </div>
                 <?php 
                     endforeach;
