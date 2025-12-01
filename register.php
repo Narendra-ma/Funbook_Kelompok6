@@ -1,6 +1,8 @@
 <?php
-session_start();
-if(isset($_SESSION['username'])){
+include 'config.php';
+
+// Jika sudah login, redirect ke index
+if(isset($_SESSION['user_id'])){
     header("Location: index.php");
     exit;
 }
@@ -10,65 +12,72 @@ if(isset($_SESSION['username'])){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - Funbook</title>
+    <title>Daftar - Funbook</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="assets/css/style.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        .register-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+    </style>
 </head>
-<body class="login-body">
-    <div class="container container-fluid">
-        <?php if(isset($_SESSION['error'])): ?>
-            <div class="alert alert-danger mt-3" role="alert"><?php echo htmlspecialchars($_SESSION['error']); ?></div>
-            <?php unset($_SESSION['error']); ?>
-        <?php endif; ?>
-        
-        <?php if(isset($_SESSION['success'])): ?>
-            <div class="alert alert-success mt-3" role="alert"><?php echo htmlspecialchars($_SESSION['success']); ?></div>
-            <?php unset($_SESSION['success']); ?>
-        <?php endif; ?>
-        
-        <form method="POST" action="register_action.php">
-            <div class="card login-card">
-                <div class="card-header bg-primary text-white text-center">
-                    <h4 class="mb-0">Daftar Funbook</h4>
-                </div>
-                <div class="card-body">
-                    <div class="row mb-3">
-                        <label for="full_name" class="col-sm-3 col-form-label">Nama Lengkap</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="full_name" name="full_name" required>
-                        </div>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="register-card p-4">
+                    <div class="text-center mb-4">
+                        <h3 class="text-primary">
+                            <i class="fas fa-gamepad me-2"></i>Funbook
+                        </h3>
+                        <p class="text-muted">Buat akun baru</p>
                     </div>
-                    <div class="row mb-3">
-                        <label for="username" class="col-sm-3 col-form-label">Username</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="username" name="username" required>
+
+                    <?php if(isset($_SESSION['error'])): ?>
+                        <div class="alert alert-danger"><?php echo $_SESSION['error']; unset($_SESSION['error']); ?></div>
+                    <?php endif; ?>
+
+                    <?php if(isset($_SESSION['success'])): ?>
+                        <div class="alert alert-success"><?php echo $_SESSION['success']; unset($_SESSION['success']); ?></div>
+                    <?php endif; ?>
+
+                    <form method="POST" action="actions/register_action.php">
+                        <div class="mb-3">
+                            <label class="form-label">Nama Lengkap</label>
+                            <input type="text" name="full_name" class="form-control" required>
                         </div>
-                    </div>
-                    <div class="row mb-3">
-                        <label for="email" class="col-sm-3 col-form-label">Email</label>
-                        <div class="col-sm-9">
-                            <input type="email" class="form-control" id="email" name="email" required>
+                        <div class="mb-3">
+                            <label class="form-label">Username</label>
+                            <input type="text" name="username" class="form-control" required>
                         </div>
-                    </div>
-                    <div class="row mb-3">
-                        <label for="password" class="col-sm-3 col-form-label">Password</label>
-                        <div class="col-sm-9">
-                            <input type="password" class="form-control" id="password" name="password" required>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" required>
                         </div>
-                    </div>
-                    <div class="row mb-3">
-                        <label for="confirm_password" class="col-sm-3 col-form-label">Konfirmasi Password</label>
-                        <div class="col-sm-9">
-                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input type="password" name="password" class="form-control" required>
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label">Konfirmasi Password</label>
+                            <input type="password" name="confirm_password" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 mb-3">Daftar</button>
+                    </form>
+
+                    <div class="text-center">
+                        <a href="login.php" class="text-decoration-none">Sudah punya akun? Login di sini</a>
                     </div>
-                </div>
-                <div class="card-footer text-end">
-                    <button type="submit" class="btn btn-primary me-2">Daftar</button>
-                    <a href="login.php" class="btn btn-outline-primary">Login</a>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
 </body>
 </html>

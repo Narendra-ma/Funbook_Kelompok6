@@ -1,6 +1,8 @@
 <?php
-session_start();
-if(isset($_SESSION['username'])){
+include 'config.php';
+
+// Jika sudah login, redirect ke index
+if(isset($_SESSION['user_id'])){
     header("Location: index.php");
     exit;
 }
@@ -12,40 +14,54 @@ if(isset($_SESSION['username'])){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Funbook</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="assets/css/style.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        .login-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+    </style>
 </head>
-<body class="login-body">
-    <div class="container container-fluid">
-        <?php if(isset($_SESSION['error'])): ?>
-            <div class="alert alert-danger mt-3" role="alert"><?php echo htmlspecialchars($_SESSION['error']); ?></div>
-            <?php unset($_SESSION['error']); ?>
-        <?php endif; ?>
-        
-        <form method="POST" action="login_action.php">
-            <div class="card login-card">
-                <div class="card-header bg-primary text-white text-center">
-                    <h4 class="mb-0">Login Funbook</h4>
-                </div>
-                <div class="card-body">
-                    <div class="row mb-3">
-                        <label for="username" class="col-sm-3 col-form-label">Username</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="username" name="username" required>
-                        </div>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                <div class="login-card p-4">
+                    <div class="text-center mb-4">
+                        <h3 class="text-primary">
+                            <i class="fas fa-gamepad me-2"></i>Funbook
+                        </h3>
+                        <p class="text-muted">Login ke akun Anda</p>
                     </div>
-                    <div class="row mb-3">
-                        <label for="password" class="col-sm-3 col-form-label">Password</label>
-                        <div class="col-sm-9">
-                            <input type="password" class="form-control" id="password" name="password" required>
+
+                    <?php if(isset($_SESSION['error'])): ?>
+                        <div class="alert alert-danger"><?php echo $_SESSION['error']; unset($_SESSION['error']); ?></div>
+                    <?php endif; ?>
+
+                    <form method="POST" action="actions/login_action.php">
+                        <div class="mb-3">
+                            <label class="form-label">Username atau Email</label>
+                            <input type="text" name="username" class="form-control" required>
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input type="password" name="password" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 mb-3">Login</button>
+                    </form>
+
+                    <div class="text-center">
+                        <a href="register.php" class="text-decoration-none">Belum punya akun? Daftar di sini</a>
                     </div>
-                </div>
-                <div class="card-footer text-end">
-                    <button type="submit" class="btn btn-primary me-2">Login</button>
-                    <a href="register.php" class="btn btn-outline-primary">Register</a>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
 </body>
 </html>
