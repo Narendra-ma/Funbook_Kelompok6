@@ -34,15 +34,11 @@ if(isset($_SESSION['user_id'])) {
     
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top shadow-sm">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
         <div class="container">
-            <!-- Logo -->
             <a class="navbar-brand" href="index.php">
                 <i class="fas fa-book-open me-2"></i>FunBook
             </a>
-            
-            <!-- Search Bar -->
             <div class="d-none d-lg-flex mx-4 flex-grow-1">
                 <div class="input-group">
                     <span class="input-group-text bg-light border-0">
@@ -51,8 +47,6 @@ if(isset($_SESSION['user_id'])) {
                     <input type="text" class="form-control border-0 bg-light" placeholder="Cari di FunBook...">
                 </div>
             </div>
-            
-            <!-- Navbar Icons -->
             <div class="d-flex align-items-center">
                 <!-- Home -->
                 <a href="index.php" class="btn btn-light btn-sm mx-1 <?php echo basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : ''; ?>">

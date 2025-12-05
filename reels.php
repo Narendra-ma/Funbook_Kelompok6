@@ -1,7 +1,6 @@
 <?php
 include 'header.php';
 
-// Ambil semua reels
 $sql = "SELECT reels.*, users.username, users.profile_picture 
         FROM reels 
         JOIN users ON reels.user_id = users.id 
@@ -53,6 +52,30 @@ $reels = $stmt->fetchAll();
         </div>
         <?php endforeach; ?>
 
+    </div>
+</div>
+
+<div class="modal fade" id="uploadReelModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="actions/upload_reel.php" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h5 class="modal-title">Upload Reel</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+
+                    <label class="form-label">Video (MP4)</label>
+                    <input type="file" name="video" class="form-control mb-3" accept="video/mp4" required>
+
+                    <label class="form-label">Caption</label>
+                    <textarea name="caption" class="form-control"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary">Upload</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 

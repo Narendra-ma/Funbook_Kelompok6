@@ -1,4 +1,4 @@
-// Fungsi like post dengan AJAX
+// Fungsi like post
 $(document).ready(function() {
     // Like functionality
     $(document).on('click', '.like-btn', function() {
@@ -77,8 +77,6 @@ $(document).ready(function() {
             }, 1000);
         }
     });
-
-    // Tab functionality dengan smooth transition
 
     // Tooltip initialization
     $('[data-bs-toggle="tooltip"]').tooltip();

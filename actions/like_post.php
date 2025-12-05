@@ -1,21 +1,33 @@
 <?php
-session_start();
-include '../connection.php';
-include '../class/Post.php';
+include '../config.php';
 
-if(isset($_POST['post_id']) && isset($_SESSION['user_id'])) {
+// Cek login
+if(!isset($_SESSION['user_id'])){
+    echo 'error';
+    exit;
+}
+
+if($_POST['post_id']){
     $post_id = $_POST['post_id'];
     $user_id = $_SESSION['user_id'];
     
-    if(Post::like($conn, $user_id, $post_id)) {
-        // Check if now liked or unliked
-        if(Post::isLiked($conn, $user_id, $post_id)) {
-            echo 'liked';
-        } else {
-            echo 'unliked';
-        }
+    // Cek apakah sudah like
+    $sql = "SELECT id FROM likes WHERE user_id = ? AND post_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([$user_id, $post_id]);
+    
+    if($stmt->rowCount() > 0){
+        // Jika sudah like, hapus like (unlike)
+        $sql = "DELETE FROM likes WHERE user_id = ? AND post_id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$user_id, $post_id]);
+        echo 'unliked';
     } else {
-        echo 'error';
+        // Jika belum like, tambah like
+        $sql = "INSERT INTO likes (user_id, post_id) VALUES (?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$user_id, $post_id]);
+        echo 'liked';
     }
 } else {
     echo 'error';

@@ -1,57 +1,35 @@
 <?php
-session_start();
-include '../connection.php';
-include '../class/Post.php';
+include '../config.php';
 
-if(isset($_POST['content']) && isset($_SESSION['user_id'])) {
-    $content = $_POST['content'];
-    $user_id = $_SESSION['user_id'];
-    
-    // Handle image upload
-    $image = null;
-    if(isset($_FILES['post_image']) && $_FILES['post_image']['error'] === 0) {
-        $image = uploadImage($_FILES['post_image']);
-    }
-    
-    if(Post::create($conn, $user_id, $content, $image)) {
-        header("Location: ../index.php");
-        exit;
-    } else {
-        $_SESSION['error'] = "Gagal membuat postingan";
-        header("Location: ../index.php");
-        exit;
-    }
-} else {
-    header("Location: ../index.php");
+// Cek login
+if(!isset($_SESSION['user_id'])){
+    header("Location: ../login.php");
     exit;
 }
 
-function uploadImage($file) {
-    $target_dir = "../assets/images/posts/";
-    $imageFileType = strtolower(pathinfo($file["name"], PATHINFO_EXTENSION));
-    $filename = uniqid() . '.' . $imageFileType;
-    $target_file = $target_dir . $filename;
+if($_POST['group_name']){
+    $name = $_POST['group_name'];
+    $description = $_POST['description'];
+    $user_id = $_SESSION['user_id'];
+
+    // Buat grup baru (tambahkan backticks)
+    $sql = "INSERT INTO `groups` (name, description, created_by) VALUES (?, ?, ?)";
+    $stmt = $conn->prepare($sql);
     
-    // Check if image file is actual image
-    $check = getimagesize($file["tmp_name"]);
-    if($check === false) {
-        return null;
+    if($stmt->execute([$name, $description, $user_id])){
+        $group_id = $conn->lastInsertId();
+        
+        // Tambahkan pembuat sebagai admin
+        $sql = "INSERT INTO group_members (group_id, user_id, role) VALUES (?, ?, 'admin')";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$group_id, $user_id]);
+        
+        $_SESSION['success'] = "Grup berhasil dibuat!";
+    } else {
+        $_SESSION['error'] = "Gagal membuat grup";
     }
-    
-    // Check file size (5MB)
-    if($file["size"] > 5000000) {
-        return null;
-    }
-    
-    // Allow certain file formats
-    if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
-        return null;
-    }
-    
-    if(move_uploaded_file($file["tmp_name"], $target_file)) {
-        return $filename;
-    }
-    
-    return null;
 }
+
+header("Location: ../groups.php");
+exit;
 ?>
