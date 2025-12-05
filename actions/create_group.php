@@ -1,5 +1,6 @@
 <?php
-include '../config.php';
+session_start();
+require_once '../config.php';
 
 // Cek login
 if(!isset($_SESSION['user_id'])){
@@ -12,8 +13,8 @@ if($_POST['group_name']){
     $description = $_POST['description'];
     $user_id = $_SESSION['user_id'];
 
-    // Buat grup baru
-    $sql = "INSERT INTO groups (name, description, created_by) VALUES (?, ?, ?)";
+    // Buat grup baru - GUNAKAN BACKTICKS
+    $sql = "INSERT INTO `groups` (name, description, created_by) VALUES (?, ?, ?)";
     $stmt = $conn->prepare($sql);
     
     if($stmt->execute([$name, $description, $user_id])){

@@ -1,5 +1,6 @@
 <?php
-include '../config.php';
+session_start();
+require_once '../config.php';
 
 // Cek login
 if(!isset($_SESSION['user_id'])){
@@ -7,29 +8,39 @@ if(!isset($_SESSION['user_id'])){
     exit;
 }
 
-if($_POST['group_name']){
-    $name = $_POST['group_name'];
-    $description = $_POST['description'];
+if(isset($_POST['content'])){
     $user_id = $_SESSION['user_id'];
+    $content = $_POST['content'];
+    $image = null;
 
-    // Buat grup baru (tambahkan backticks)
-    $sql = "INSERT INTO `groups` (name, description, created_by) VALUES (?, ?, ?)";
+    // Handle upload gambar
+    if(isset($_FILES['post_image']) && $_FILES['post_image']['error'] == 0){
+        $allowed = ['jpg', 'jpeg', 'png', 'gif'];
+        $filename = $_FILES['post_image']['name'];
+        $filetype = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        
+        if(in_array($filetype, $allowed)){
+            $new_filename = uniqid() . '.' . $filetype;
+            $upload_path = '../assets/images/posts/' . $new_filename;
+            
+            if(move_uploaded_file($_FILES['post_image']['tmp_name'], $upload_path)){
+                $image = $new_filename;
+            }
+        }
+    }
+
+    // Simpan postingan ke tabel posts (untuk homepage)
+    $sql = "INSERT INTO posts (user_id, content, image) VALUES (?, ?, ?)";
     $stmt = $conn->prepare($sql);
     
-    if($stmt->execute([$name, $description, $user_id])){
-        $group_id = $conn->lastInsertId();
-        
-        // Tambahkan pembuat sebagai admin
-        $sql = "INSERT INTO group_members (group_id, user_id, role) VALUES (?, ?, 'admin')";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([$group_id, $user_id]);
-        
-        $_SESSION['success'] = "Grup berhasil dibuat!";
+    if($stmt->execute([$user_id, $content, $image])){
+        $_SESSION['success'] = "Postingan berhasil dipublikasikan!";
     } else {
-        $_SESSION['error'] = "Gagal membuat grup";
+        $_SESSION['error'] = "Gagal membuat postingan";
     }
 }
 
-header("Location: ../groups.php");
+// Redirect ke homepage, BUKAN groups.php
+header("Location: ../index.php");
 exit;
 ?>

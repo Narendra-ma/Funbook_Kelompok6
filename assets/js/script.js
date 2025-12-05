@@ -378,3 +378,4 @@ $(document).ready(function() {
 });
     console.log('Funbook JavaScript loaded successfully!');
 });
+

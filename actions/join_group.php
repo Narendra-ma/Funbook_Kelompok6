@@ -1,5 +1,6 @@
 <?php
-include '../config.php';
+session_start();
+require_once '../config.php';
 
 // Cek login
 if(!isset($_SESSION['user_id'])){

@@ -1,6 +1,14 @@
 <?php
 include 'config.php';
 
+// Pastikan session sudah dimulai
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Debug session
+error_log("SESSION in header: " . json_encode($_SESSION));
+
 // Cek apakah user sudah login
 if(!isset($_SESSION['user_id']) && basename($_SERVER['PHP_SELF']) != 'login.php' && basename($_SERVER['PHP_SELF']) != 'register.php') {
     header("Location: login.php");
