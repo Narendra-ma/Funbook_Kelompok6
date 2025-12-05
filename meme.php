@@ -141,7 +141,7 @@ $trending_memes = $stmt_trending->fetchAll();
         <!-- Trending Memes -->
         <div class="card mb-3">
             <div class="card-header">
-                <h6 class="mb-0">🔥 Trending Memes</h6>
+                <h6 class="mb-0">Trending Memes</h6>
             </div>
             <div class="card-body">
                 <?php if(count($trending_memes) > 0): ?>
@@ -172,7 +172,7 @@ $trending_memes = $stmt_trending->fetchAll();
         <!-- Meme Categories -->
         <div class="card mb-3">
             <div class="card-header">
-                <h6 class="mb-0">📁 Kategori</h6>
+                <h6 class="mb-0">Kategori</h6>
             </div>
             <div class="card-body">
                 <div class="mb-2">
